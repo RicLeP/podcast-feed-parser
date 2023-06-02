@@ -419,12 +419,18 @@ class Parser
      */
     protected function getFile(\SimplePie_Item $item): Media
     {
-        $enclosure = $item->get_enclosure();
-        $media = new Media();
-        $media->setUri($enclosure->get_link())
-            ->setMimeType($enclosure->get_type())
-            ->setLength($enclosure->get_length());
-        return $media;
+        $enclosures = $item->get_enclosures();
+
+		foreach($enclosures as $enclosure) {
+			if (in_array($enclosure->get_type(), ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-m4a', 'audio/aac', 'audio/x-aac', 'audio/x-m4b', 'audio/ogg', 'audio/x-ogg', 'audio/x-mp3'])) {
+				$media = new Media();
+				$media->setUri($enclosure->get_link())
+					->setMimeType($enclosure->get_type())
+					->setLength($enclosure->get_length());
+			}
+		}
+
+	    return $media;
     }
 
     /**
